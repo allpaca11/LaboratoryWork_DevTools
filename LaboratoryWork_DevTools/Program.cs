@@ -221,7 +221,7 @@ namespace LaboratoryWork_DevTools
                 Console.WriteLine($"Когого водителя хотите назначить? (1 - {drivers[0].Name} {drivers[0].Age}, " +
                                 $"2 - {drivers[1].Name} {drivers[1].Age}, 3 - {drivers[2].Name} {drivers[2].Age})");
                 SelectedDriver = Convert.ToInt32(Console.ReadLine()) - 1;
-                ShowDriverInfo("Driver");
+                ShowDriverInfo("Logist");
                 CurrentDriver = drivers[SelectedDriver];
                 CurrentCar = cars[SelectedDriver];
                 CurrentCargo = cargo[SelectedDriver];
