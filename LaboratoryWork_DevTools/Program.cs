@@ -4,12 +4,12 @@ namespace LaboratoryWork_DevTools
 {
     internal class Program
     {
-        static Random rand = new Random();
         static Driver[] drivers;
         static Car[] cars;
         static Cargo[] cargo;
+        static Random rand = new Random();
         static RouteSheet routeSheet = new RouteSheet();
-        static int SelectedItem;
+        static int selectedItem;
 
         enum Worker
         {
@@ -29,10 +29,10 @@ namespace LaboratoryWork_DevTools
             cargo = new Cargo[] { new Cargo(), new Cargo(), new Cargo() };
 
             Console.WriteLine("Кем вы работаете? (1 - Логист, 2 - Водитель)");
-            SelectedItem = ReadNum();
+            selectedItem = ReadNum();
             Console.Clear();
 
-            switch (SelectedItem)
+            switch (selectedItem)
             {
                 case 1:
                     ContinueAsLogist();
@@ -62,10 +62,10 @@ namespace LaboratoryWork_DevTools
 
                 Console.WriteLine($"Когого водителя хотите назначить? (1 - {drivers[0].Name} {drivers[0].Age}, " +
                             $"2 - {drivers[1].Name} {drivers[1].Age}, 3 - {drivers[2].Name} {drivers[2].Age})");
-                SelectedItem = ReadNum() - 1;
-                CurrentDriver = drivers[SelectedItem];
-                CurrentCar = cars[SelectedItem];
-                CurrentCargo = cargo[SelectedItem];
+                selectedItem = ReadNum() - 1;
+                CurrentDriver = drivers[selectedItem];
+                CurrentCar = cars[selectedItem];
+                CurrentCargo = cargo[selectedItem];
                 ShowTable(Worker.Logist);
                 Console.WriteLine("Вы выбрали " + CurrentDriver.Name + " " + CurrentDriver.Age + "\n");
 
@@ -77,10 +77,10 @@ namespace LaboratoryWork_DevTools
                     "3. Загрузить водителя в данном месте\n" +
                     "4. Разгрузить водителя в данном месте\n" +
                     "5. Выбрать другого водителя\n");
-                    SelectedItem = ReadNum();
+                    selectedItem = ReadNum();
                     ShowTable(Worker.Logist);
 
-                    switch (SelectedItem)
+                    switch (selectedItem)
                     {
                         case 1:
                             Console.WriteLine("Местонахождение водителя: " + CurrentDriver.Location + "\n");
@@ -88,15 +88,15 @@ namespace LaboratoryWork_DevTools
                         case 2:
                             Console.WriteLine("Куда отправить водителя?");
                             routeSheet.ShowList();
-                            SelectedItem = ReadNum() - 1;
-                            if (routeSheet.List[SelectedItem] == CurrentDriver.Location)
+                            selectedItem = ReadNum() - 1;
+                            if (routeSheet.List[selectedItem] == CurrentDriver.Location)
                             {
                                 ShowTable(Worker.Logist);
                                 Console.WriteLine("Водитель уже в этом городе\n");
                             }
                             else
                             {
-                                CurrentDriver.Location = routeSheet.List[SelectedItem];
+                                CurrentDriver.Location = routeSheet.List[selectedItem];
                                 ShowTable(Worker.Logist);
                                 Console.WriteLine("Водитель будет там с минуты на минуту\n");
                             }
@@ -133,9 +133,9 @@ namespace LaboratoryWork_DevTools
                     "5. Разгрузиться\n" +
                     "6. Унать полную информацию о машине\n"
                     );
-                SelectedItem = ReadNum();
+                selectedItem = ReadNum();
                 ShowTable(Worker.Driver);
-                switch (SelectedItem)
+                switch (selectedItem)
                 {
                     case 1:
                         if (CurrentCar.CurretFuel < CurrentCar.FuelConsumption)
@@ -146,15 +146,15 @@ namespace LaboratoryWork_DevTools
                         {
                             Console.WriteLine("Куда отправиться?\n");
                             routeSheet.ShowList();
-                            SelectedItem = ReadNum() - 1;
-                            if (CurrentDriver.Location == routeSheet.List[SelectedItem])
+                            selectedItem = ReadNum() - 1;
+                            if (CurrentDriver.Location == routeSheet.List[selectedItem])
                             {
                                 ShowTable(Worker.Driver);
                                 Console.WriteLine("Вы уже в этом городе\n");
                             }
                             else
                             {
-                                CurrentDriver.Location = routeSheet.List[SelectedItem];
+                                CurrentDriver.Location = routeSheet.List[selectedItem];
                                 int SpentFuel = rand.Next(5, CurrentCar.FuelConsumption);
                                 CurrentCar.CurretFuel -= SpentFuel;
                                 ShowTable(Worker.Driver);
