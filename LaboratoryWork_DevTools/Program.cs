@@ -4,250 +4,243 @@ namespace LaboratoryWork_DevTools
 {
     internal class Program
     {
-        static void Main()
-        {
-            Random rand = new Random();
-            Driver[] drivers = { new Driver(rand), new Driver(rand), new Driver(rand) };
-            Car[] cars = { new Car(rand), new Car(rand), new Car(rand) };
-            Cargo[] cargo = { new Cargo(), new Cargo(), new Cargo() };
-            RouteSheet routeSheet = new RouteSheet();
-            Console.WriteLine("Кем вы работаете? (1 - Логист, 2 - Водитель)");
-            int SelectedItem = Convert.ToInt32(Console.ReadLine());
-            Console.Clear();
-            if (SelectedItem == 1)
-            {
-                ContinueAsLogist();
-            }
-            else
-            {
-                ContinueAsDriver();
-            }
-            void ContinueAsLogist()
-            {
-                ShowDriverInfo("Logist");
-                while (true)
-                {
-                    Console.WriteLine("Выберите пункт из списка возможностей:\n" +
-                        "1. Получить общую информацию о водителях\n" +
-                        "2. Назначить водителя для маршрута\n");
-                    SelectedItem = Convert.ToInt32(Console.ReadLine());
-                    ShowDriverInfo("Logist");
-                    if (SelectedItem == 1)
-                    {
-                        foreach (Driver driver in drivers)
-                        {
-                            driver.ShowInfo();
-                        }
-                    }
-                    else
-                    {
-                        int SelectedDriver;
-                        Driver CurrentDriver;
-                        Car CurrentCar;
-                        Cargo CurrentCargo;
-                        ChooseDriver(out SelectedDriver, out CurrentDriver, out CurrentCar, out CurrentCargo);
-                        while (true)
-                        {
-                            
-                            Console.WriteLine("Выберите пункт из списка возможностей:\n" +
-                                "1. Узнать местонахождение водителя\n" +
-                                "2. Отправить водителя\n" +
-                                "3. Загрузить водителя в данном месте\n" +
-                                "4. Разгрузить водителя в данном месте\n" +
-                                "5. Выбрать другого водителя\n");
-                            SelectedItem = Convert.ToInt32(Console.ReadLine());
-                            ShowDriverInfo("Logist");
-                            switch (SelectedItem)
-                            {
-                                case 1:
-                                    Console.WriteLine("Местонахождение водителя: " + CurrentDriver.Location + "\n");
-                                    break;
-                                case 2:
-                                    Console.WriteLine("Куда отправить водителя?");
-                                    routeSheet.ShowList();
-                                    SelectedItem = Convert.ToInt32(Console.ReadLine()) - 1;
-                                    CurrentDriver.Location = routeSheet.List[SelectedItem];
-                                    ShowDriverInfo("Logist");
-                                    Console.WriteLine("Водитель будет там с минуты на минуту\n");
-                                    break;
-                                case 3:
-                                    if (CurrentCar.Cargo == "Пусто")
-                                    {
-                                        Console.WriteLine("Список груза:");
-                                        CurrentCargo.ShowList();
-                                        SelectedItem = Convert.ToInt32(Console.ReadLine()) - 1;
-                                        CurrentCar.Cargo = CurrentCargo.List[SelectedItem];
-                                        Console.WriteLine("Кол-во килограмм? Максимум " + CurrentCar.LoadCapacity);
-                                        SelectedItem = Convert.ToInt32(Console.ReadLine());
-                                        if (CurrentCar.LoadCapacity <= SelectedItem)
-                                        {
-                                            CurrentCargo.Weight = CurrentCar.LoadCapacity;
-                                        }
-                                        else
-                                        {
-                                            CurrentCargo.Weight = SelectedItem;
-                                        }
-                                        ShowDriverInfo("Logist");
-                                        Console.WriteLine("Машина загружена\n");
-                                    }
-                                    else
-                                    {
-                                        Console.WriteLine("У водителя уже есть груз: " + CurrentCar.Cargo + 
-                                            " " + CurrentCargo.Weight + " кг\n");
-                                    }
-                                    break;
-                                case 4:
-                                    if (CurrentCar.Cargo == "Пусто")
-                                    {
-                                        ShowDriverInfo("Logist");
-                                        Console.WriteLine("В машине нет груза\n");
-                                    }
-                                    else
-                                    {
-                                        CurrentCar.Cargo = "Пусто";
-                                        CurrentCargo.Weight = 0;
-                                        ShowDriverInfo("Logist");
-                                        Console.WriteLine("Машина разгружена\n");
-                                    }
-                                    break;
-                                case 5:
-                                    ChooseDriver(out SelectedDriver, out CurrentDriver, out CurrentCar, out CurrentCargo);
-                                    break;
-                            }
-                        }
-                
-                    }
-                }
-            }
-            void ContinueAsDriver()
-            {
-                ShowDriverInfo("Driver");
-                while (true)
-                {
-                    Console.WriteLine("Выберите пункт из списка возможностей:\n" +
-                        "1. Отправиться в поездку\n" +
-                        "2. Узнать количество топлива\n" +
-                        "3. Заправиться\n" +
-                        "4. Загрузиться\n" +
-                        "5. Разгрузиться\n" +
-                        "6. Унать полную информацию о машине\n"
-                        );
-                    SelectedItem = Convert.ToInt32(Console.ReadLine());
-                    ShowDriverInfo("Driver");
-                    switch (SelectedItem)
-                    {
-                        case 1:
-                            if (cars[0].CurretFuel < cars[0].FuelConsumption)
-                            {
-                                Console.WriteLine("Мало топлива, поездка невозможна\n");
-                            }
-                            else
-                            {
-                                Console.WriteLine("Куда отправиться?\n");
-                                routeSheet.ShowList();
-                                SelectedItem = Convert.ToInt32(Console.ReadLine()) - 1;
-                                if (drivers[0].Location == routeSheet.List[SelectedItem])
-                                {
-                                    ShowDriverInfo("Driver");
-                                    Console.WriteLine("Вы уже в этом городе\n");
-                                }
-                                else
-                                {
-                                    drivers[0].Location = routeSheet.List[SelectedItem];
-                                    int SpentFuel = rand.Next(5, cars[0].FuelConsumption);
-                                    cars[0].CurretFuel -= SpentFuel;
-                                    ShowDriverInfo("Driver");
-                                    Console.WriteLine("На эту поездку ушло " + SpentFuel + " л\n");
-                                }
-                                
-                            }
-                            break;
-                        case 2:
-                            Console.WriteLine("У вас " + cars[0].CurretFuel + "л топлива\n");
-                            break;
-                        case 3:
-                            cars[0].CurretFuel = cars[0].TankVolume;
-                            Console.WriteLine("Вы полностью заправились!\n");
-                            break;
-                        case 4:
-                            if (cars[0].Cargo == "Пусто")
-                            {
-                                Console.WriteLine("Список груза:\n");
-                                cargo[0].ShowList();
-                                SelectedItem = Convert.ToInt32(Console.ReadLine()) - 1;
-                                cars[0].Cargo = cargo[0].List[SelectedItem];
-                                Console.WriteLine("Кол-во килограмм? Максимум " + cars[0].LoadCapacity);
-                                SelectedItem = Convert.ToInt32(Console.ReadLine());
-                                if (cars[0].LoadCapacity < SelectedItem)
-                                {
-                                    cargo[0].Weight = cars[0].LoadCapacity;
-                                }
-                                else
-                                {
-                                    cargo[0].Weight = SelectedItem;
-                                }
-                                ShowDriverInfo("Driver");
-                                Console.WriteLine("Машина загружена\n");
-                            }
-                            else
-                            {
-                                Console.WriteLine("У водителя уже есть груз: " + cars[0].Cargo + " " + cargo[0].Weight + " кг\n");
-                            }
-                            break;
-                        case 5:
-                            if (cars[0].Cargo == "Пусто")
-                            {
-                                Console.WriteLine("В машине нет груза\n");
-                            }
-                            else
-                            {
-                                cars[0].Cargo = "Пусто";
-                                cargo[0].Weight = 0;
-                                ShowDriverInfo("Driver");
-                                Console.WriteLine("Машина разгружена\n");
-                            }
-                            break;
-                        case 6:
-                            cars[0].ShowInfo();
-                            break;
-                    }
-                }
-                
-            }
+        static Random rand = new Random();
+        static Driver[] drivers;
+        static Car[] cars;
+        static Cargo[] cargo = { new Cargo(), new Cargo(), new Cargo() };
+        static RouteSheet routeSheet = new RouteSheet();
+        static int SelectedItem;
 
-            
-            void ChooseDriver(out int SelectedDriver, out Driver CurrentDriver, out Car CurrentCar, out Cargo CurrentCargo)
+        enum Worker
+        {
+            Logist,
+            Driver
+        }
+
+        static int ReadNum()
+        {
+            return Convert.ToInt32(Console.ReadLine());
+        }
+
+        static void ShowTable(Worker worker)
+        {
+            Console.Clear();
+            switch (worker)
             {
-                Console.WriteLine($"Когого водителя хотите назначить? (1 - {drivers[0].Name} {drivers[0].Age}, " +
-                                $"2 - {drivers[1].Name} {drivers[1].Age}, 3 - {drivers[2].Name} {drivers[2].Age})");
-                SelectedDriver = Convert.ToInt32(Console.ReadLine()) - 1;
-                ShowDriverInfo("Logist");
-                CurrentDriver = drivers[SelectedDriver];
-                CurrentCar = cars[SelectedDriver];
-                CurrentCargo = cargo[SelectedDriver];
-                Console.WriteLine("Вы выбрали " + CurrentDriver.Name + " " + CurrentDriver.Age + "\n");
-            }
-            void ShowDriverInfo(string Worker)
-            {
-                Console.Clear();
-                if (Worker == "Logist")
-                {
+                case Worker.Logist:
                     Console.SetCursorPosition(0, 19);
                     Console.Write($"Имя\tГород\tГруз\tВес\n" +
                         $"{drivers[0].Name}\t{drivers[0].Location}\t{cars[0].Cargo}\t{cargo[0].Weight}\n" +
                         $"{drivers[1].Name}\t{drivers[1].Location}\t{cars[1].Cargo}\t{cargo[1].Weight}\n" +
                         $"{drivers[2].Name}\t{drivers[2].Location}\t{cars[2].Cargo}\t{cargo[2].Weight}\n");
+                    break;
+
+                case Worker.Driver:
+                    Console.SetCursorPosition(0, 21);
+                    Console.Write("Имя\tГород\tГруз\tКг\n" +
+                        $"{drivers[0].Name}\t{drivers[0].Location}\t{cars[0].Cargo}\t{cargo[0].Weight}");
+                    break;
+            }
+            Console.SetCursorPosition(0, 0);
+        }
+
+        static void Main()
+        {
+            drivers = new Driver[] { new Driver(rand), new Driver(rand), new Driver(rand) };
+            cars = new Car[] { new Car(rand), new Car(rand), new Car(rand) };
+
+            Console.WriteLine("Кем вы работаете? (1 - Логист, 2 - Водитель)");
+            SelectedItem = ReadNum();
+            Console.Clear();
+
+            switch (SelectedItem)
+            {
+                case 1:
+                    ContinueAsLogist();
+                    break;
+                case 2:
+                    ContinueAsDriver();
+                    break;
+            }
+        }
+        static void ContinueAsLogist()
+        {
+            Driver CurrentDriver;
+            Car CurrentCar;
+            Cargo CurrentCargo;
+            bool finishedManage = false;
+
+            while (true)
+            {
+                Console.Clear();
+                Console.SetCursorPosition(0, 12);
+                foreach (Driver driver in drivers)
+                {
+                    driver.ShowInfo();
+                }
+                Console.SetCursorPosition(0, 0);
+
+                Console.WriteLine($"Когого водителя хотите назначить? (1 - {drivers[0].Name} {drivers[0].Age}, " +
+                            $"2 - {drivers[1].Name} {drivers[1].Age}, 3 - {drivers[2].Name} {drivers[2].Age})");
+                SelectedItem = ReadNum() - 1;
+                CurrentDriver = drivers[SelectedItem];
+                CurrentCar = cars[SelectedItem];
+                CurrentCargo = cargo[SelectedItem];
+                ShowTable(Worker.Logist);
+                Console.WriteLine("Вы выбрали " + CurrentDriver.Name + " " + CurrentDriver.Age + "\n");
+
+                while (!finishedManage)
+                {
+                    Console.WriteLine("Выберите пункт из списка возможностей:\n" +
+                    "1. Узнать местонахождение водителя\n" +
+                    "2. Отправить водителя\n" +
+                    "3. Загрузить водителя в данном месте\n" +
+                    "4. Разгрузить водителя в данном месте\n" +
+                    "5. Выбрать другого водителя\n");
+                    SelectedItem = ReadNum();
+                    ShowTable(Worker.Logist);
+
+                    switch (SelectedItem)
+                    {
+                        case 1:
+                            Console.WriteLine("Местонахождение водителя: " + CurrentDriver.Location + "\n");
+                            break;
+                        case 2:
+                            Console.WriteLine("Куда отправить водителя?");
+                            routeSheet.ShowList();
+                            SelectedItem = ReadNum() - 1;
+                            CurrentDriver.Location = routeSheet.List[SelectedItem];
+                            ShowTable(Worker.Logist);
+                            Console.WriteLine("Водитель будет там с минуты на минуту\n");
+                            break;
+                        case 3:
+                            LoadCargo(CurrentCar, CurrentCargo, Worker.Logist);
+                            break;
+                        case 4:
+                            UnloadCargo(CurrentCar, CurrentCargo, Worker.Logist);
+                            break;
+                        case 5:
+                            finishedManage = true;
+                            break;
+                    }
+                }
+                finishedManage = false;
+            }
+        }
+
+        static void ContinueAsDriver()
+        {
+            Driver CurrentDriver = drivers[0];
+            Car CurrentCar = cars[0];
+            Cargo CurrentCargo = cargo[0];
+
+            ShowTable(Worker.Driver);
+            while (true)
+            {
+                Console.WriteLine("Выберите пункт из списка возможностей:\n" +
+                    "1. Отправиться в поездку\n" +
+                    "2. Узнать количество топлива\n" +
+                    "3. Заправиться\n" +
+                    "4. Загрузиться\n" +
+                    "5. Разгрузиться\n" +
+                    "6. Унать полную информацию о машине\n"
+                    );
+                SelectedItem = ReadNum();
+                ShowTable(Worker.Driver);
+                switch (SelectedItem)
+                {
+                    case 1:
+                        if (CurrentCar.CurretFuel < CurrentCar.FuelConsumption)
+                        {
+                            Console.WriteLine("Мало топлива, поездка невозможна\n");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Куда отправиться?\n");
+                            routeSheet.ShowList();
+                            SelectedItem = ReadNum() - 1;
+                            if (CurrentDriver.Location == routeSheet.List[SelectedItem])
+                            {
+                                ShowTable(Worker.Driver);
+                                Console.WriteLine("Вы уже в этом городе\n");
+                            }
+                            else
+                            {
+                                CurrentDriver.Location = routeSheet.List[SelectedItem];
+                                int SpentFuel = rand.Next(5, CurrentCar.FuelConsumption);
+                                CurrentCar.CurretFuel -= SpentFuel;
+                                ShowTable(Worker.Driver);
+                                Console.WriteLine("На эту поездку ушло " + SpentFuel + " л\n");
+                            }
+
+                        }
+                        break;
+                    case 2:
+                        Console.WriteLine("У вас " + CurrentCar.CurretFuel + "л топлива\n");
+                        break;
+                    case 3:
+                        CurrentCar.CurretFuel = CurrentCar.TankVolume;
+                        Console.WriteLine("Вы полностью заправились!\n");
+                        break;
+                    case 4:
+                        LoadCargo(CurrentCar, CurrentCargo, Worker.Driver);
+                        break;
+                    case 5:
+                        UnloadCargo(CurrentCar, CurrentCargo, Worker.Driver);
+                        break;
+                    case 6:
+                        CurrentCar.ShowInfo();
+                        break;
+                }
+            }
+        }
+
+        static void LoadCargo(Car CurrentCar, Cargo CurrentCargo, Worker worker)
+        {
+            int SelectedItem;
+
+            if (CurrentCar.Cargo == "Пусто")
+            {
+                Console.WriteLine("Список груза:");
+                CurrentCargo.ShowList();
+                SelectedItem = ReadNum() - 1;
+                CurrentCar.Cargo = CurrentCargo.List[SelectedItem];
+                Console.WriteLine("Кол-во килограмм? Максимум " + CurrentCar.LoadCapacity);
+                SelectedItem = ReadNum();
+                if (CurrentCar.LoadCapacity <= SelectedItem)
+                {
+                    CurrentCargo.Weight = CurrentCar.LoadCapacity;
                 }
                 else
                 {
-                Console.SetCursorPosition(0, 21);
-                Console.Write("Имя\tГород\tГруз\tКг\n" +
-                    $"{drivers[0].Name}\t{drivers[0].Location}\t{cars[0].Cargo}\t{cargo[0].Weight}");
+                    CurrentCargo.Weight = SelectedItem;
                 }
-                Console.SetCursorPosition(0, 0);
+                ShowTable(worker);
+                Console.WriteLine("Машина загружена\n");
+            }
+            else
+            {
+                Console.WriteLine("У водителя уже есть груз: " + CurrentCar.Cargo +
+                    " " + CurrentCargo.Weight + " кг\n");
+            }
+        }
+
+        static void UnloadCargo(Car CurrentCar, Cargo CurrentCargo, Worker worker)
+        {
+            if (CurrentCar.Cargo == "Пусто")
+            {
+                Console.WriteLine("В машине нет груза\n");
+            }
+            else
+            {
+                CurrentCar.Cargo = "Пусто";
+                CurrentCargo.Weight = 0;
+                ShowTable(worker);
+                Console.WriteLine("Машина разгружена\n");
             }
         }
     }
+
     internal class Driver
     {
         string[] Names = new string[] {"Сергей", "Михаил", "Иван", "Антон", "Роман", "Алексей", "Кирилл", "Максим", 
@@ -257,10 +250,12 @@ namespace LaboratoryWork_DevTools
         public string Name;
         public int Age;
         public int Experience;
+
         public void ShowInfo()
         {
             Console.WriteLine($"Имя: {Name}\nВозраст: {Age}\nОпыт работы: {Experience}\n");
         }
+
         public Driver(Random rand)
         {
             Name = Names[rand.Next(0, Names.Length)];
@@ -269,9 +264,9 @@ namespace LaboratoryWork_DevTools
             Location = routeSheet.List[rand.Next(0, routeSheet.List.Length)];
         }
     }
+
     internal class Car
     {
-        Random rand = new Random();
         public string[] Brands = { "Lada", "Renault", "Hyundai", "KIA", "Man", "Kamaz", "Volvo" };
         public string Brand;
         public string Cargo;
@@ -281,6 +276,7 @@ namespace LaboratoryWork_DevTools
         public int TankVolume;
         public int FuelConsumption;
         public int CurretFuel;
+
         public Car(Random rand)
         {
             Brand = Brands[rand.Next(0, Brands.Length)];
@@ -291,16 +287,19 @@ namespace LaboratoryWork_DevTools
             CurretFuel = TankVolume;
             Cargo = "Пусто";
         }
+
         public void ShowInfo()
         {
             Console.WriteLine($"Бренд: {Brand}\nГрузоподъёмность: {LoadCapacity}\nГод производства: {ProductionYear}\n" +
                 $"Объём топливного бака: {TankVolume}\nРасход топлива: {FuelConsumption} л на 100 км\n");
         }
     }
+
     internal class Cargo
     {
         public string[] List = { "Сталь", "Брёвна", "Уголь", "Горох", "Соя", "Лён", "Окна", "Грунт", "Песок", "Кирпичи" };
         public int Weight;
+
         public void ShowList()
         {
             for (int i = 0; i < List.Length; i++)
@@ -309,6 +308,7 @@ namespace LaboratoryWork_DevTools
             }
         }
     }
+
     internal class RouteSheet
     {
         public string[] List = { "Омск", "Томск", "Чита", "Брянск", "Москва", "Казань", "Самара", "Пермь" };
