@@ -63,6 +63,7 @@ namespace LaboratoryWork_DevTools
                     break;
             }
         }
+
         static void ContinueAsLogist()
         {
             Driver CurrentDriver;
@@ -109,9 +110,17 @@ namespace LaboratoryWork_DevTools
                             Console.WriteLine("Куда отправить водителя?");
                             routeSheet.ShowList();
                             SelectedItem = ReadNum() - 1;
-                            CurrentDriver.Location = routeSheet.List[SelectedItem];
-                            ShowTable(Worker.Logist);
-                            Console.WriteLine("Водитель будет там с минуты на минуту\n");
+                            if (routeSheet.List[SelectedItem] == CurrentDriver.Location)
+                            {
+                                ShowTable(Worker.Logist);
+                                Console.WriteLine("Водитель уже в этом городе\n");
+                            }
+                            else
+                            {
+                                CurrentDriver.Location = routeSheet.List[SelectedItem];
+                                ShowTable(Worker.Logist);
+                                Console.WriteLine("Водитель будет там с минуты на минуту\n");
+                            }
                             break;
                         case 3:
                             LoadCargo(CurrentCar, CurrentCargo, Worker.Logist);
