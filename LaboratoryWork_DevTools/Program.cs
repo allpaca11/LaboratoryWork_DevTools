@@ -22,28 +22,6 @@ namespace LaboratoryWork_DevTools
             return Convert.ToInt32(Console.ReadLine());
         }
 
-        static void ShowTable(Worker worker)
-        {
-            Console.Clear();
-            switch (worker)
-            {
-                case Worker.Logist:
-                    Console.SetCursorPosition(0, 19);
-                    Console.Write($"Имя\tГород\tГруз\tВес\n" +
-                        $"{drivers[0].Name}\t{drivers[0].Location}\t{cars[0].Cargo}\t{cargo[0].Weight}\n" +
-                        $"{drivers[1].Name}\t{drivers[1].Location}\t{cars[1].Cargo}\t{cargo[1].Weight}\n" +
-                        $"{drivers[2].Name}\t{drivers[2].Location}\t{cars[2].Cargo}\t{cargo[2].Weight}\n");
-                    break;
-
-                case Worker.Driver:
-                    Console.SetCursorPosition(0, 21);
-                    Console.Write("Имя\tГород\tГруз\tКг\n" +
-                        $"{drivers[0].Name}\t{drivers[0].Location}\t{cars[0].Cargo}\t{cargo[0].Weight}");
-                    break;
-            }
-            Console.SetCursorPosition(0, 0);
-        }
-
         static void Main()
         {
             drivers = new Driver[] { new Driver(rand), new Driver(rand), new Driver(rand) };
@@ -202,6 +180,28 @@ namespace LaboratoryWork_DevTools
                         break;
                 }
             }
+        }
+
+        static void ShowTable(Worker worker)
+        {
+            Console.Clear();
+            switch (worker)
+            {
+                case Worker.Logist:
+                    Console.SetCursorPosition(0, 19);
+                    Console.Write($"Имя\tГород\tГруз\tВес\n" +
+                        $"{drivers[0].Name}\t{drivers[0].Location}\t{cars[0].Cargo}\t{cargo[0].Weight}\n" +
+                        $"{drivers[1].Name}\t{drivers[1].Location}\t{cars[1].Cargo}\t{cargo[1].Weight}\n" +
+                        $"{drivers[2].Name}\t{drivers[2].Location}\t{cars[2].Cargo}\t{cargo[2].Weight}\n");
+                    break;
+
+                case Worker.Driver:
+                    Console.SetCursorPosition(0, 21);
+                    Console.Write("Имя\tГород\tГруз\tКг\n" +
+                        $"{drivers[0].Name}\t{drivers[0].Location}\t{cars[0].Cargo}\t{cargo[0].Weight}");
+                    break;
+            }
+            Console.SetCursorPosition(0, 0);
         }
 
         static void LoadCargo(Car CurrentCar, Cargo CurrentCargo, Worker worker)
