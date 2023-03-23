@@ -7,7 +7,7 @@ namespace LaboratoryWork_DevTools
         static Random rand = new Random();
         static Driver[] drivers;
         static Car[] cars;
-        static Cargo[] cargo = { new Cargo(), new Cargo(), new Cargo() };
+        static Cargo[] cargo;
         static RouteSheet routeSheet = new RouteSheet();
         static int SelectedItem;
 
@@ -26,6 +26,7 @@ namespace LaboratoryWork_DevTools
         {
             drivers = new Driver[] { new Driver(rand), new Driver(rand), new Driver(rand) };
             cars = new Car[] { new Car(rand), new Car(rand), new Car(rand) };
+            cargo = new Cargo[] { new Cargo(), new Cargo(), new Cargo() };
 
             Console.WriteLine("Кем вы работаете? (1 - Логист, 2 - Водитель)");
             SelectedItem = ReadNum();
