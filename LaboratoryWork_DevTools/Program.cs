@@ -119,7 +119,7 @@ namespace LaboratoryWork_DevTools
                     "3. Заправиться\n" +
                     "4. Загрузиться\n" +
                     "5. Разгрузиться\n" +
-                    "6. Унать полную информацию о машине\n"
+                    "6. Узнать полную информацию о машине\n"
                     );
                 selectedItem = ReadNum();
                 ShowTable(Worker.Driver);
