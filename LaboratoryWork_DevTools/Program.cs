@@ -126,7 +126,7 @@ namespace LaboratoryWork_DevTools
                 switch (selectedItem)
                 {
                     case 1:
-                        if (currentCar.CurretFuel < currentCar.FuelConsumption)
+                        if (currentCar.CurrentFuel < currentCar.FuelConsumption)
                         {
                             Console.WriteLine("Мало топлива, поездка невозможна\n");
                         }
@@ -138,10 +138,10 @@ namespace LaboratoryWork_DevTools
                         }
                         break;
                     case 2:
-                        Console.WriteLine("У вас " + currentCar.CurretFuel + "л топлива\n");
+                        Console.WriteLine("У вас " + currentCar.CurrentFuel + "л топлива\n");
                         break;
                     case 3:
-                        currentCar.CurretFuel = currentCar.TankVolume;
+                        currentCar.CurrentFuel = currentCar.TankVolume;
                         Console.WriteLine("Вы полностью заправились!\n");
                         break;
                     case 4:
@@ -194,7 +194,7 @@ namespace LaboratoryWork_DevTools
             else
             {
                 CurrentDriver.Location = routeSheet.List[SelectedItem];
-                CurrentCar.CurretFuel -= SpentFuel;
+                CurrentCar.CurrentFuel -= SpentFuel;
                 ShowTable(Worker);
                 Console.WriteLine("Будем там с минуты на минуту\n");
             }
@@ -280,7 +280,7 @@ namespace LaboratoryWork_DevTools
         public int ProductionYear;
         public int TankVolume;
         public int FuelConsumption;
-        public int CurretFuel;
+        public int CurrentFuel;
 
         public Car(Random rand)
         {
@@ -289,7 +289,7 @@ namespace LaboratoryWork_DevTools
             ProductionYear = rand.Next(2000, 2016);
             TankVolume = rand.Next(1, 6) * 100;
             FuelConsumption = rand.Next(20, 51);
-            CurretFuel = TankVolume;
+            CurrentFuel = TankVolume;
             Cargo = "Пусто";
         }
 
