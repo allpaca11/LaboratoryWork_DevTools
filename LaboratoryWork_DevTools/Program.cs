@@ -45,9 +45,9 @@ namespace LaboratoryWork_DevTools
 
         static void ContinueAsLogist()
         {
-            Driver CurrentDriver;
-            Car CurrentCar;
-            Cargo CurrentCargo;
+            Driver currentDriver;
+            Car currentCar;
+            Cargo currentCargo;
             bool finishedManage = false;
 
             while (true)
@@ -63,11 +63,11 @@ namespace LaboratoryWork_DevTools
                 Console.WriteLine($"Когого водителя хотите назначить? (1 - {drivers[0].Name} {drivers[0].Age}, " +
                             $"2 - {drivers[1].Name} {drivers[1].Age}, 3 - {drivers[2].Name} {drivers[2].Age})");
                 selectedItem = ReadNum() - 1;
-                CurrentDriver = drivers[selectedItem];
-                CurrentCar = cars[selectedItem];
-                CurrentCargo = cargo[selectedItem];
+                currentDriver = drivers[selectedItem];
+                currentCar = cars[selectedItem];
+                currentCargo = cargo[selectedItem];
                 ShowTable(Worker.Logist);
-                Console.WriteLine("Вы выбрали " + CurrentDriver.Name + " " + CurrentDriver.Age + "\n");
+                Console.WriteLine("Вы выбрали " + currentDriver.Name + " " + currentDriver.Age + "\n");
 
                 while (!finishedManage)
                 {
@@ -83,29 +83,16 @@ namespace LaboratoryWork_DevTools
                     switch (selectedItem)
                     {
                         case 1:
-                            Console.WriteLine("Местонахождение водителя: " + CurrentDriver.Location + "\n");
+                            Console.WriteLine("Местонахождение водителя: " + currentDriver.Location + "\n");
                             break;
                         case 2:
-                            Console.WriteLine("Куда отправить водителя?");
-                            routeSheet.ShowList();
-                            selectedItem = ReadNum() - 1;
-                            if (routeSheet.List[selectedItem] == CurrentDriver.Location)
-                            {
-                                ShowTable(Worker.Logist);
-                                Console.WriteLine("Водитель уже в этом городе\n");
-                            }
-                            else
-                            {
-                                CurrentDriver.Location = routeSheet.List[selectedItem];
-                                ShowTable(Worker.Logist);
-                                Console.WriteLine("Водитель будет там с минуты на минуту\n");
-                            }
+                            SentDriver(currentDriver, currentCar, Worker.Logist);
                             break;
                         case 3:
-                            LoadCargo(CurrentCar, CurrentCargo, Worker.Logist);
+                            LoadCargo(currentCar, currentCargo, Worker.Logist);
                             break;
                         case 4:
-                            UnloadCargo(CurrentCar, CurrentCargo, Worker.Logist);
+                            UnloadCargo(currentCar, currentCargo, Worker.Logist);
                             break;
                         case 5:
                             finishedManage = true;
@@ -118,9 +105,10 @@ namespace LaboratoryWork_DevTools
 
         static void ContinueAsDriver()
         {
-            Driver CurrentDriver = drivers[0];
-            Car CurrentCar = cars[0];
-            Cargo CurrentCargo = cargo[0];
+            Driver currentDriver = drivers[0];
+            Car currentCar = cars[0];
+            Cargo currentCargo = cargo[0];
+            int spentFuel;
 
             ShowTable(Worker.Driver);
             while (true)
@@ -138,55 +126,41 @@ namespace LaboratoryWork_DevTools
                 switch (selectedItem)
                 {
                     case 1:
-                        if (CurrentCar.CurretFuel < CurrentCar.FuelConsumption)
+                        if (currentCar.CurretFuel < currentCar.FuelConsumption)
                         {
                             Console.WriteLine("Мало топлива, поездка невозможна\n");
                         }
                         else
                         {
-                            Console.WriteLine("Куда отправиться?\n");
-                            routeSheet.ShowList();
-                            selectedItem = ReadNum() - 1;
-                            if (CurrentDriver.Location == routeSheet.List[selectedItem])
-                            {
-                                ShowTable(Worker.Driver);
-                                Console.WriteLine("Вы уже в этом городе\n");
-                            }
-                            else
-                            {
-                                CurrentDriver.Location = routeSheet.List[selectedItem];
-                                int SpentFuel = rand.Next(5, CurrentCar.FuelConsumption);
-                                CurrentCar.CurretFuel -= SpentFuel;
-                                ShowTable(Worker.Driver);
-                                Console.WriteLine("На эту поездку ушло " + SpentFuel + " л\n");
-                            }
-
+                            spentFuel = rand.Next(5, currentCar.FuelConsumption);
+                            SentDriver(currentDriver, currentCar, Worker.Driver, spentFuel);
+                            Console.WriteLine("На эту поездку ушло " + spentFuel + " л\n");
                         }
                         break;
                     case 2:
-                        Console.WriteLine("У вас " + CurrentCar.CurretFuel + "л топлива\n");
+                        Console.WriteLine("У вас " + currentCar.CurretFuel + "л топлива\n");
                         break;
                     case 3:
-                        CurrentCar.CurretFuel = CurrentCar.TankVolume;
+                        currentCar.CurretFuel = currentCar.TankVolume;
                         Console.WriteLine("Вы полностью заправились!\n");
                         break;
                     case 4:
-                        LoadCargo(CurrentCar, CurrentCargo, Worker.Driver);
+                        LoadCargo(currentCar, currentCargo, Worker.Driver);
                         break;
                     case 5:
-                        UnloadCargo(CurrentCar, CurrentCargo, Worker.Driver);
+                        UnloadCargo(currentCar, currentCargo, Worker.Driver);
                         break;
                     case 6:
-                        CurrentCar.ShowInfo();
+                        currentCar.ShowInfo();
                         break;
                 }
             }
         }
 
-        static void ShowTable(Worker worker)
+        static void ShowTable(Worker Worker)
         {
             Console.Clear();
-            switch (worker)
+            switch (Worker)
             {
                 case Worker.Logist:
                     Console.SetCursorPosition(0, 19);
@@ -205,7 +179,28 @@ namespace LaboratoryWork_DevTools
             Console.SetCursorPosition(0, 0);
         }
 
-        static void LoadCargo(Car CurrentCar, Cargo CurrentCargo, Worker worker)
+        static void SentDriver(Driver CurrentDriver, Car CurrentCar, Worker Worker, int SpentFuel = 0)
+        {
+            int SelectedItem;
+
+            Console.WriteLine("Куда отправиться?");
+            routeSheet.ShowList();
+            SelectedItem = ReadNum() - 1;
+            if (routeSheet.List[SelectedItem] == CurrentDriver.Location)
+            {
+                ShowTable(Worker);
+                Console.WriteLine("Мы уже в этом городе\n");
+            }
+            else
+            {
+                CurrentDriver.Location = routeSheet.List[SelectedItem];
+                CurrentCar.CurretFuel -= SpentFuel;
+                ShowTable(Worker);
+                Console.WriteLine("Будем там с минуты на минуту\n");
+            }
+        }
+
+        static void LoadCargo(Car CurrentCar, Cargo CurrentCargo, Worker Worker)
         {
             int SelectedItem;
 
@@ -225,7 +220,7 @@ namespace LaboratoryWork_DevTools
                 {
                     CurrentCargo.Weight = SelectedItem;
                 }
-                ShowTable(worker);
+                ShowTable(Worker);
                 Console.WriteLine("Машина загружена\n");
             }
             else
@@ -235,7 +230,7 @@ namespace LaboratoryWork_DevTools
             }
         }
 
-        static void UnloadCargo(Car CurrentCar, Cargo CurrentCargo, Worker worker)
+        static void UnloadCargo(Car CurrentCar, Cargo CurrentCargo, Worker Worker)
         {
             if (CurrentCar.Cargo == "Пусто")
             {
@@ -245,7 +240,7 @@ namespace LaboratoryWork_DevTools
             {
                 CurrentCar.Cargo = "Пусто";
                 CurrentCargo.Weight = 0;
-                ShowTable(worker);
+                ShowTable(Worker);
                 Console.WriteLine("Машина разгружена\n");
             }
         }
